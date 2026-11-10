@@ -1,0 +1,6 @@
+{
+  "name": "Vertor Phics Pro",
+  "description": "Professional vector design studio for mobile and tablets. Draw logos, icons, illustrations, and print-ready artwork in RGB & CMYK up to 300 ppi.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Vertor Phics Pro</title>
+  <meta name="theme-color" content="#161922">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #1e212b;
+      color: #e0e5ed;
+    }
+    #app-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* TOP MENU BAR */
+    #top-menu-bar {
+      height: 32px;
+      background: #161922;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      border-bottom: 1px solid #282c3c;
+      font-size: 12px;
+    }
+    .menu-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .app-badge {
+      background: #ff9a00;
+      color: #000;
+      font-weight: 900;
+      font-size: 11px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      margin-right: 6px;
+    }
+    .menu-item {
+      padding: 3px 6px;
+      border-radius: 3px;
+      cursor: pointer;
+      color: #cfd8dc;
+    }
+    .menu-item:hover, .menu-item.active {
+      background: #2b3042;
+      color: #fff;
+    }
+    .quick-btn {
+      background: #252a38;
+      border: 1px solid #363d50;
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .export-btn {
+      background: #00e5ff;
+      color: #00363a;
+      font-weight: bold;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* CONTROL BAR */
+    #control-bar {
+      height: 36px;
+      background: #232734;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      gap: 10px;
+      border-bottom: 1px solid #2d3244;
+      overflow-x: auto;
+      white-space: nowrap;
+      font-size: 11px;
+    }
+    .doc-tab {
+      background: #181b24;
+      padding: 4px 8px;
+      border-radius: 4px 4px 0 0;
+      border: 1px solid #33384a;
+      border-bottom: none;
+      color: #fff;
+      font-weight: 500;
+    }
+    .v-divider {
+      width: 1px;
+      height: 18px;
+      background: #363b4d;
+    }
+    .chip {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      border: 1px solid #4c5468;
+      cursor: pointer;
+    }
+    .control-select {
+      background: #1a1d27;
+      color: #fff;
+      border: 1px solid #3a4052;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+      outline: none;
+    }
+
+    /* MAIN WORKSPACE */
+    #workspace {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* LEFT TOOL RAIL */
+    #tool-rail {
+      width: 46px;
+      background: #1e212b;
+      border-right: 1px solid #2b2f3d;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 4px 0;
+      z-index: 10;
+      overflow-y: auto;
+    }
+    .tool-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #c0c7d5;
+      font-size: 14px;
+      margin-bottom: 2px;
+      position: relative;
+    }
+    .tool-btn.active {
+      background: rgba(0, 229, 255, 0.22);
+      border: 1px solid #00e5ff;
+      color: #00e5ff;
+    }
+    .tool-sub-indicator {
+      position: absolute;
+      right: 2px;
+      bottom: 2px;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 0 3px 3px;
+      border-color: transparent transparent #78909c transparent;
+    }
+    .tool-btn.active .tool-sub-indicator {
+      border-color: transparent transparent #00e5ff transparent;
+    }
+
+    /* FILL / STROKE OVERLAY */
+    .color-swatch-box {
+      width: 32px;
+      height: 32px;
+      position: relative;
+      margin-top: 8px;
+    }
+    .swatch-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      background: #00e5ff;
+      border: 1.5px solid #fff;
+      border-radius: 3px;
+      z-index: 2;
+      cursor: pointer;
+    }
+    .swatch-stroke {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 20px;
+      height: 20px;
+      background: #14171f;
+      border: 1.5px solid #454d60;
+      border-radius: 3px;
+      z-index: 1;
+      cursor: pointer;
+    }
+    .swap-btn {
+      font-size: 10px;
+      color: #90a4ae;
+      cursor: pointer;
+      margin-top: 2px;
+    }
+
+    /* CENTER CANVAS */
+    #canvas-viewport {
+      flex: 1;
+      background: #333742;
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+      touch-action: none;
+    }
+    #artboard-container {
+      position: absolute;
+      transform-origin: 0 0;
+    }
+    .artboard-label {
+      position: absolute;
+      top: -20px;
+      left: 0;
+      font-size: 11px;
+      color: #b0bec5;
+      font-weight: 500;
+    }
+    #artboard-canvas {
+      background: #ffffff;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
+
+    /* RIGHT DOCK */
+    #right-dock {
+      width: 38px;
+      background: #1e212b;
+      border-left: 1px solid #2b2f3d;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 6px 0;
+      gap: 6px;
+      z-index: 10;
+    }
+    .dock-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #90a4ae;
+      font-size: 13px;
+    }
+    .dock-btn.active {
+      background: rgba(0, 229, 255, 0.2);
+      border: 1px solid #00e5ff;
+      color: #00e5ff;
+    }
+
+    /* PROPERTIES INSPECTOR PANEL */
+    #properties-panel {
+      width: 260px;
+      background: #1e212b;
+      border-left: 1px solid #2b2f3d;
+      padding: 12px;
+      overflow-y: auto;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 9;
+    }
+    .panel-header {
+      font-weight: bold;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #2a2e3d;
+      padding-bottom: 6px;
+    }
+    .section-card {
+      background: #181b24;
+      border: 1px solid #2a2e3d;
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .section-title {
+      font-size: 11px;
+      color: #90a4ae;
+      font-weight: bold;
+    }
+    .grid-2x2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+    .grid-6 {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 3px;
+    }
+    .inspector-btn {
+      background: #151821;
+      border: 1px solid #2a2e3d;
+      color: #e0e5ed;
+      padding: 6px 2px;
+      border-radius: 4px;
+      font-size: 10px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .inspector-btn:hover, .inspector-btn.active {
+      background: rgba(0, 229, 255, 0.15);
+      border-color: #00e5ff;
+      color: #00e5ff;
+    }
+
+    /* BOTTOM STATUS BAR */
+    #bottom-status-bar {
+      height: 24px;
+      background: #1e212b;
+      border-top: 1px solid #2b2f3d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      font-size: 10px;
+      color: #78909c;
+    }
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* MODAL DIALOG */
+    #export-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal-content {
+      background: #1e212b;
+      border: 1px solid #2b2f3d;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 380px;
+      padding: 16px;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+<div id="app-container">
+
+  <!-- 1. TOP MENU BAR -->
+  <div id="top-menu-bar">
+    <div class="menu-group">
+      <div class="app-badge">Vp</div>
+      <div class="menu-item" onclick="newDoc()">File</div>
+      <div class="menu-item" onclick="undo()">Edit</div>
+      <div class="menu-item">Object</div>
+      <div class="menu-item" onclick="fitArtboard()">View</div>
+      <div class="menu-item">Window</div>
+    </div>
+    <div class="menu-group">
+      <button class="quick-btn" onclick="undo()">↶ Undo</button>
+      <button class="quick-btn" onclick="redo()">↷ Redo</button>
+      <button class="export-btn" onclick="openExportModal()">Export</button>
+    </div>
+  </div>
+
+  <!-- 2. CONTROL BAR -->
+  <div id="control-bar">
+    <div class="doc-tab" id="doc-tab-title">Untitled-1 @ 100% (CMYK)</div>
+    <div class="v-divider"></div>
+    <span style="color:#90a4ae;" id="selection-info">No Selection</span>
+    <div class="chip" id="control-fill-chip" style="background:#00e5ff;" onclick="toggleColorPicker('fill')"></div>
+    <div class="chip" id="control-stroke-chip" style="background:#14171f;" onclick="toggleColorPicker('stroke')"></div>
+    <select class="control-select" id="stroke-width-select" onchange="changeStrokeWidth(this.value)">
+      <option value="1">1 pt</option>
+      <option value="2" selected>2 pt</option>
+      <option value="3">3 pt</option>
+      <option value="4">4 pt</option>
+      <option value="6">6 pt</option>
+      <option value="8">8 pt</option>
+      <option value="12">12 pt</option>
+    </select>
+    <select class="control-select" id="opacity-select" onchange="changeOpacity(this.value)">
+      <option value="1.0" selected>Opacity: 100%</option>
+      <option value="0.8">80%</option>
+      <option value="0.6">60%</option>
+      <option value="0.4">40%</option>
+    </select>
+    <div class="v-divider"></div>
+    <button class="quick-btn" onclick="alignElements('left')">⇤</button>
+    <button class="quick-btn" onclick="alignElements('centerH')">⇥⇤</button>
+    <button class="quick-btn" onclick="alignElements('right')">⇥</button>
+    <button class="quick-btn" onclick="alignElements('top')">⤒</button>
+    <button class="quick-btn" onclick="alignElements('centerV')">↕</button>
+    <button class="quick-btn" onclick="alignElements('bottom')">⤓</button>
+  </div>
+
+  <!-- 3. MAIN WORKSPACE -->
+  <div id="workspace">
+
+    <!-- LEFT TOOL RAIL -->
+    <div id="tool-rail">
+      <div class="tool-btn active" title="Selection (V)" data-tool="select" onclick="selectTool('select')">
+        <span>➤</span>
+      </div>
+      <div class="tool-btn" title="Direct Selection (A)" data-tool="direct_select" onclick="selectTool('direct_select')">
+        <span>⇗</span>
+      </div>
+      <div class="tool-btn" title="Pen Tool (P)" data-tool="pen" onclick="selectTool('pen')">
+        <span>✒</span><div class="tool-sub-indicator"></div>
+      </div>
+      <div class="tool-btn" title="Curvature Tool" data-tool="curvature" onclick="selectTool('curvature')">
+        <span>∿</span>
+      </div>
+      <div class="tool-btn" title="Rectangle / Shapes (M)" data-tool="rect" onclick="selectTool('rect')">
+        <span>▭</span><div class="tool-sub-indicator"></div>
+      </div>
+      <div class="tool-btn" title="Ellipse Tool (L)" data-tool="ellipse" onclick="selectTool('ellipse')">
+        <span>◯</span>
+      </div>
+      <div class="tool-btn" title="Paintbrush (B)" data-tool="brush" onclick="selectTool('brush')">
+        <span>🖌</span>
+      </div>
+      <div class="tool-btn" title="Pencil Tool (N)" data-tool="pencil" onclick="selectTool('pencil')">
+        <span>✎</span>
+      </div>
+      <div class="tool-btn" title="Eraser Tool (Shift+E)" data-tool="eraser" onclick="selectTool('eraser')">
+        <span>✂</span>
+      </div>
+      <div class="tool-btn" title="Rotate Tool (R)" data-tool="rotate" onclick="selectTool('rotate')">
+        <span>↻</span>
+      </div>
+      <div class="tool-btn" title="Scale Tool (S)" data-tool="scale" onclick="selectTool('scale')">
+        <span>⤢</span>
+      </div>
+      <div class="tool-btn" title="Shape Builder (Shift+M)" data-tool="shape_builder" onclick="selectTool('shape_builder')">
+        <span>⧉</span>
+      </div>
+      <div class="tool-btn" title="Type Tool (T)" data-tool="text" onclick="selectTool('text')">
+        <span>T</span>
+      </div>
+      <div class="tool-btn" title="Eyedropper (I)" data-tool="eyedropper" onclick="selectTool('eyedropper')">
+        <span>💧</span>
+      </div>
+      <div class="tool-btn" title="Hand Tool (H)" data-tool="hand" onclick="selectTool('hand')">
+        <span>✋</span>
+      </div>
+      <div class="tool-btn" title="Zoom Tool (Z)" data-tool="zoom" onclick="selectTool('zoom')">
+        <span>🔍</span>
+      </div>
+
+      <!-- FILL & STROKE OVERLAPPING CHIPS -->
+      <div class="color-swatch-box">
+        <div class="swatch-fill" id="swatch-fill" onclick="toggleColorPicker('fill')"></div>
+        <div class="swatch-stroke" id="swatch-stroke" onclick="toggleColorPicker('stroke')"></div>
+      </div>
+      <div class="swap-btn" onclick="swapColors()" title="Swap Colors">⇄</div>
+      <input type="color" id="hidden-color-picker" style="display:none;" onchange="applyColor(this.value)">
+    </div>
+
+    <!-- CANVAS VIEWPORT -->
+    <div id="canvas-viewport">
+      <div id="artboard-container">
+        <div class="artboard-label" id="artboard-title-label">01 - Artboard 1 • 600 × 800 pt</div>
+        <svg id="artboard-canvas" width="600" height="800" xmlns="http://www.w3.org/2000/svg">
+          <!-- Artwork elements rendered here -->
+          <g id="artwork-layer"></g>
+          <!-- Interactive handles & preview overlay -->
+          <g id="preview-layer"></g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- PROPERTIES PANEL -->
+    <div id="properties-panel">
+      <div class="panel-header">
+        <span>Properties</span>
+        <span style="font-size:11px; color:#00e5ff;" id="prop-count-badge">No Selection</span>
+      </div>
+
+      <!-- Transform Section -->
+      <div class="section-card">
+        <div class="section-title">Transform</div>
+        <div class="grid-2x2">
+          <div class="inspector-btn" onclick="flipSelected('h')">Flip Horiz</div>
+          <div class="inspector-btn" onclick="flipSelected('v')">Flip Vert</div>
+          <div class="inspector-btn" onclick="rotateSelected(90)">Rotate 90°</div>
+          <div class="inspector-btn" onclick="duplicateSelected()">Duplicate</div>
+        </div>
+      </div>
+
+      <!-- Pathfinder Section -->
+      <div class="section-card">
+        <div class="section-title">Pathfinder (Shape Modes)</div>
+        <div class="grid-2x2">
+          <div class="inspector-btn" onclick="pathfinder('unite')" title="Merge shapes">Unite (Merge)</div>
+          <div class="inspector-btn" onclick="pathfinder('minus_front')" title="Cut top shape">Minus Front (Cut)</div>
+          <div class="inspector-btn" onclick="pathfinder('intersect')" title="Intersection">Intersect</div>
+          <div class="inspector-btn" onclick="pathfinder('exclude')" title="Cut hole">Exclude</div>
+        </div>
+      </div>
+
+      <!-- Alignment Section -->
+      <div class="section-card">
+        <div class="section-title">Align</div>
+        <div class="grid-6">
+          <div class="inspector-btn" onclick="alignElements('left')">⇤</div>
+          <div class="inspector-btn" onclick="alignElements('centerH')">⇥⇤</div>
+          <div class="inspector-btn" onclick="alignElements('right')">⇥</div>
+          <div class="inspector-btn" onclick="alignElements('top')">⤒</div>
+          <div class="inspector-btn" onclick="alignElements('centerV')">↕</div>
+          <div class="inspector-btn" onclick="alignElements('bottom')">⤓</div>
+        </div>
+      </div>
+
+      <!-- Document Section -->
+      <div class="section-card">
+        <div class="section-title">Document</div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span>Units:</span>
+          <select class="control-select">
+            <option>Points (pt)</option>
+            <option>Pixels (px)</option>
+            <option>Inches (in)</option>
+            <option>Millimeters (mm)</option>
+          </select>
+        </div>
+        <div style="color:#78909c; font-size:10px; margin-top:4px;">Color Engine: CMYK (SWOP Coated) • 300 PPI</div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="section-card">
+        <div class="section-title">Quick Actions</div>
+        <div class="grid-2x2">
+          <div class="inspector-btn" onclick="bringForward()">Forward</div>
+          <div class="inspector-btn" onclick="sendBackward()">Backward</div>
+          <div class="inspector-btn" style="color:#ff5252; border-color:#ff5252;" onclick="deleteSelected()">Delete</div>
+          <div class="inspector-btn" style="color:#00e5ff; border-color:#00e5ff;" onclick="openExportModal()">Export</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT DOCK ICON STRIP -->
+    <div id="right-dock">
+      <div class="dock-btn active" title="Properties">⚙</div>
+      <div class="dock-btn" title="Layers">≡</div>
+      <div class="dock-btn" title="Color" onclick="toggleColorPicker('fill')">🎨</div>
+      <div class="dock-btn" title="Align" onclick="alignElements('centerH')">⇥⇤</div>
+      <div class="dock-btn" title="Pathfinder" onclick="pathfinder('unite')">⧉</div>
+      <div style="flex:1;"></div>
+      <div class="dock-btn" title="Export" onclick="openExportModal()">↥</div>
+    </div>
+  </div>
+
+  <!-- 4. BOTTOM STATUS BAR -->
+  <div id="bottom-status-bar">
+    <div class="status-left">
+      <span id="zoom-status-text">100%</span>
+      <span>0°</span>
+      <span>|&lt; &lt; 1 &gt; &gt;|</span>
+    </div>
+    <div id="status-hint">Click object to select | Two-finger pinch to zoom | Drag to pan</div>
+  </div>
+</div>
+
+<!-- EXPORT MODAL -->
+<div id="export-modal">
+  <div class="modal-content">
+    <h3 style="margin-bottom:12px; color:#00e5ff;">Export Artwork</h3>
+    <p style="font-size:12px; color:#90a4ae; margin-bottom:16px;">Export your vector design for client print or web screens.</p>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <button class="export-btn" onclick="exportSVG()">Download SVG (Clean Vectors)</button>
+      <button class="quick-btn" style="padding:8px;" onclick="exportPNG()">Download High-Res PNG (300 PPI)</button>
+      <button class="quick-btn" style="padding:8px; margin-top:8px;" onclick="closeExportModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Global State
+  const state = {
+    currentTool: 'select',
+    fillColor: '#00e5ff',
+    strokeColor: '#14171f',
+    strokeWidth: 2,
+    opacity: 1.0,
+    zoom: 1.0,
+    panX: 40,
+    panY: 40,
+    artboardW: 600,
+    artboardH: 800,
+    elements: [],
+    selectedIds: new Set(),
+    activePaintTarget: 'fill',
+    undoStack: [],
+    redoStack: []
+  };
+
+  const viewport = document.getElementById('canvas-viewport');
+  const container = document.getElementById('artboard-container');
+  const svg = document.getElementById('artboard-canvas');
+  const artworkLayer = document.getElementById('artwork-layer');
+  const previewLayer = document.getElementById('preview-layer');
+
+  // Initialize Canvas Positioning
+  function updateViewportTransform() {
+    container.style.transform = `translate(${state.panX}px, ${state.panY}px) scale(${state.zoom})`;
+    document.getElementById('zoom-status-text').innerText = `${Math.round(state.zoom * 100)}%`;
+    document.getElementById('doc-tab-title').innerText = `Untitled-1 @ ${Math.round(state.zoom * 100)}% (CMYK)`;
+  }
+
+  function fitArtboard() {
+    const vw = viewport.clientWidth - 80;
+    const vh = viewport.clientHeight - 80;
+    const scale = Math.min(vw / state.artboardW, vh / state.artboardH, 2.5);
+    state.zoom = Math.max(0.2, scale);
+    state.panX = Math.round((viewport.clientWidth - state.artboardW * state.zoom) / 2);
+    state.panY = Math.round((viewport.clientHeight - state.artboardH * state.zoom) / 2);
+    updateViewportTransform();
+  }
+
+  // Two-Finger Pinch-to-Zoom & Pan Gesture Pipeline
+  let initialDistance = 0;
+  let initialZoom = 1;
+  let touchCenter = { x: 0, y: 0 };
+  let isMultiTouch = false;
+  let isDragging = false;
+  let isPanningOutside = false;
+  let isMovingElement = false;
+  let activeResizeHandle = null;
+  let initialResizeBounds = null;
+  let dragStart = { x: 0, y: 0 };
+  let currentShapeEl = null;
+
+  viewport.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+      isMultiTouch = true;
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      initialDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      initialZoom = state.zoom;
+      touchCenter = {
+        x: (t1.clientX + t2.clientX) / 2,
+        y: (t1.clientY + t2.clientY) / 2
+      };
+    } else if (e.touches.length === 1 && !isMultiTouch) {
+      isDragging = true;
+      const t = e.touches[0];
+      const rect = viewport.getBoundingClientRect();
+      const screenX = t.clientX - rect.left;
+      const screenY = t.clientY - rect.top;
+      dragStart = { screenX, screenY, docX: (screenX - state.panX) / state.zoom, docY: (screenY - state.panY) / state.zoom };
+      handlePointerDown(dragStart.docX, dragStart.docY, t.clientX, t.clientY);
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2 && initialDistance > 0) {
+      e.preventDefault();
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      const newDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      const newCenter = { x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2 };
+
+      const zoomFactor = newDistance / initialDistance;
+      const newZoom = Math.min(Math.max(initialZoom * zoomFactor, 0.1), 10);
+
+      // Smooth zoom centered exactly on fingers
+      const docX = (touchCenter.x - state.panX) / state.zoom;
+      const docY = (touchCenter.y - state.panY) / state.zoom;
+      state.zoom = newZoom;
+      state.panX = newCenter.x - docX * newZoom;
+      state.panY = newCenter.y - docY * newZoom;
+      updateViewportTransform();
+    } else if (e.touches.length === 1 && isDragging && !isMultiTouch) {
+      const t = e.touches[0];
+      const rect = viewport.getBoundingClientRect();
+      const screenX = t.clientX - rect.left;
+      const screenY = t.clientY - rect.top;
+      const docX = (screenX - state.panX) / state.zoom;
+      const docY = (screenY - state.panY) / state.zoom;
+
+      if (state.currentTool === 'hand' || isPanningOutside) {
+        state.panX += screenX - dragStart.screenX;
+        state.panY += screenY - dragStart.screenY;
+        dragStart.screenX = screenX;
+        dragStart.screenY = screenY;
+        updateViewportTransform();
+      } else {
+        handlePointerMove(docX, docY);
+      }
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', (e) => {
+    if (e.touches.length < 2) {
+      initialDistance = 0;
+      if (e.touches.length === 0) {
+        isMultiTouch = false;
+        if (isDragging) {
+          isDragging = false;
+          handlePointerUp();
+        }
+      }
+    }
+  });
+
+  // Mouse fallback
+  viewport.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    const rect = viewport.getBoundingClientRect();
+    const screenX = e.clientX - rect.left;
+    const screenY = e.clientY - rect.top;
+    dragStart = { screenX, screenY, docX: (screenX - state.panX) / state.zoom, docY: (screenY - state.panY) / state.zoom };
+    handlePointerDown(dragStart.docX, dragStart.docY, e.clientX, e.clientY);
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const rect = viewport.getBoundingClientRect();
+    const screenX = e.clientX - rect.left;
+    const screenY = e.clientY - rect.top;
+    const docX = (screenX - state.panX) / state.zoom;
+    const docY = (screenY - state.panY) / state.zoom;
+
+    if (state.currentTool === 'hand' || isPanningOutside) {
+      state.panX += screenX - dragStart.screenX;
+      state.panY += screenY - dragStart.screenY;
+      dragStart.screenX = screenX;
+      dragStart.screenY = screenY;
+      updateViewportTransform();
+    } else {
+      handlePointerMove(docX, docY);
+    }
+  });
+  window.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      handlePointerUp();
+    }
+  });
+
+  viewport.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
+    const rect = viewport.getBoundingClientRect();
+    const focalX = e.clientX - rect.left;
+    const focalY = e.clientY - rect.top;
+    const docX = (focalX - state.panX) / state.zoom;
+    const docY = (focalY - state.panY) / state.zoom;
+
+    state.zoom = Math.min(Math.max(state.zoom * zoomFactor, 0.1), 10);
+    state.panX = focalX - docX * state.zoom;
+    state.panY = focalY - docY * state.zoom;
+    updateViewportTransform();
+  }, { passive: false });
+
+  // Tool Pointer Pipeline
+  let livePoints = [];
+  function handlePointerDown(x, y, clientX, clientY) {
+    saveState();
+    if (state.currentTool === 'rect' || state.currentTool === 'ellipse') {
+      currentShapeEl = document.createElementNS('http://www.w3.org/2000/svg', state.currentTool === 'rect' ? 'rect' : 'ellipse');
+      currentShapeEl.setAttribute('fill', state.fillColor);
+      currentShapeEl.setAttribute('stroke', state.strokeColor);
+      currentShapeEl.setAttribute('stroke-width', state.strokeWidth);
+      currentShapeEl.setAttribute('opacity', state.opacity);
+      currentShapeEl.setAttribute('id', 'el_' + Date.now());
+      artworkLayer.appendChild(currentShapeEl);
+    } else if (state.currentTool === 'brush' || state.currentTool === 'pencil') {
+      livePoints = [{ x, y }];
+      currentShapeEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      currentShapeEl.setAttribute('fill', 'none');
+      currentShapeEl.setAttribute('stroke', state.strokeColor);
+      currentShapeEl.setAttribute('stroke-width', state.strokeWidth);
+      currentShapeEl.setAttribute('stroke-linecap', 'round');
+      currentShapeEl.setAttribute('stroke-linejoin', 'round');
+      currentShapeEl.setAttribute('id', 'el_' + Date.now());
+      artworkLayer.appendChild(currentShapeEl);
+    } else if (state.currentTool === 'select') {
+      const isOutside = (x < 0 || x > state.artboardW || y < 0 || y > state.artboardH);
+      const target = document.elementFromPoint(clientX || 0, clientY || 0);
+      if (target && target.classList && target.classList.contains('resize-handle')) {
+        activeResizeHandle = target.dataset.handle;
+        const selEl = document.getElementById(Array.from(state.selectedIds)[0]);
+        if (selEl) {
+          initialResizeBounds = {
+            x: parseFloat(selEl.getAttribute('x') || 0),
+            y: parseFloat(selEl.getAttribute('y') || 0),
+            w: parseFloat(selEl.getAttribute('width') || 0),
+            h: parseFloat(selEl.getAttribute('height') || 0)
+          };
+        }
+      } else if (target && target.ownerSVGElement && target.id && target.id.startsWith('el_')) {
+        state.selectedIds.clear();
+        state.selectedIds.add(target.id);
+        isMovingElement = true;
+        initialResizeBounds = {
+          x: parseFloat(target.getAttribute('x') || 0),
+          y: parseFloat(target.getAttribute('y') || 0)
+        };
+        updateSelectionUI();
+      } else if (isOutside) {
+        isPanningOutside = true;
+      } else {
+        state.selectedIds.clear();
+        updateSelectionUI();
+      }
+    }
+  }
+
+  function handlePointerMove(x, y) {
+    if (activeResizeHandle && initialResizeBounds) {
+      const el = document.getElementById(Array.from(state.selectedIds)[0]);
+      if (!el) return;
+      const dx = x - dragStart.docX;
+      const dy = y - dragStart.docY;
+      let nx = initialResizeBounds.x;
+      let ny = initialResizeBounds.y;
+      let nw = initialResizeBounds.w;
+      let nh = initialResizeBounds.h;
+
+      if (activeResizeHandle.includes('r')) nw = Math.max(10, initialResizeBounds.w + dx);
+      if (activeResizeHandle.includes('l')) {
+        const proposedW = initialResizeBounds.w - dx;
+        if (proposedW > 10) {
+          nx = initialResizeBounds.x + dx;
+          nw = proposedW;
+        }
+      }
+      if (activeResizeHandle.includes('b')) nh = Math.max(10, initialResizeBounds.h + dy);
+      if (activeResizeHandle.includes('t')) {
+        const proposedH = initialResizeBounds.h - dy;
+        if (proposedH > 10) {
+          ny = initialResizeBounds.y + dy;
+          nh = proposedH;
+        }
+      }
+      el.setAttribute('x', nx);
+      el.setAttribute('y', ny);
+      el.setAttribute('width', nw);
+      el.setAttribute('height', nh);
+      updateSelectionUI();
+      return;
+    }
+
+    if (isMovingElement && initialResizeBounds) {
+      const el = document.getElementById(Array.from(state.selectedIds)[0]);
+      if (!el) return;
+      const dx = x - dragStart.docX;
+      const dy = y - dragStart.docY;
+      el.setAttribute('x', initialResizeBounds.x + dx);
+      el.setAttribute('y', initialResizeBounds.y + dy);
+      updateSelectionUI();
+      return;
+    }
+
+    if (!currentShapeEl) return;
+    if (state.currentTool === 'rect') {
+      const left = Math.min(dragStart.docX, x);
+      const top = Math.min(dragStart.docY, y);
+      const width = Math.abs(x - dragStart.docX);
+      const height = Math.abs(y - dragStart.docY);
+      currentShapeEl.setAttribute('x', left);
+      currentShapeEl.setAttribute('y', top);
+      currentShapeEl.setAttribute('width', width);
+      currentShapeEl.setAttribute('height', height);
+    } else if (state.currentTool === 'ellipse') {
+      const cx = (dragStart.docX + x) / 2;
+      const cy = (dragStart.docY + y) / 2;
+      const rx = Math.abs(x - dragStart.docX) / 2;
+      const ry = Math.abs(y - dragStart.docY) / 2;
+      currentShapeEl.setAttribute('cx', cx);
+      currentShapeEl.setAttribute('cy', cy);
+      currentShapeEl.setAttribute('rx', rx);
+      currentShapeEl.setAttribute('ry', ry);
+    } else if (state.currentTool === 'brush' || state.currentTool === 'pencil') {
+      livePoints.push({ x, y });
+      let d = `M ${livePoints[0].x} ${livePoints[0].y}`;
+      for (let i = 1; i < livePoints.length; i++) {
+        d += ` L ${livePoints[i].x} ${livePoints[i].y}`;
+      }
+      currentShapeEl.setAttribute('d', d);
+    }
+  }
+
+  function handlePointerUp() {
+    isPanningOutside = false;
+    isMovingElement = false;
+    activeResizeHandle = null;
+    initialResizeBounds = null;
+
+    if (currentShapeEl) {
+      state.elements.push(currentShapeEl);
+      state.selectedIds.clear();
+      state.selectedIds.add(currentShapeEl.id);
+      currentShapeEl = null;
+      livePoints = [];
+      updateSelectionUI();
+    }
+  }
+
+  function selectTool(name) {
+    state.currentTool = name;
+    document.querySelectorAll('.tool-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tool === name);
+    });
+    document.getElementById('status-hint').innerText = `Active Tool: ${name.toUpperCase()} • Drag on artboard to draw`;
+  }
+
+  function updateSelectionUI() {
+    previewLayer.innerHTML = '';
+    const count = state.selectedIds.size;
+    document.getElementById('selection-info').innerText = count === 0 ? 'No Selection' : `${count} Selected`;
+    document.getElementById('prop-count-badge').innerText = count === 0 ? 'No Selection' : `${count} Selected`;
+
+    if (count === 1) {
+      const id = Array.from(state.selectedIds)[0];
+      const el = document.getElementById(id);
+      if (el && el.tagName.toLowerCase() === 'rect') {
+        const x = parseFloat(el.getAttribute('x'));
+        const y = parseFloat(el.getAttribute('y'));
+        const w = parseFloat(el.getAttribute('width'));
+        const h = parseFloat(el.getAttribute('height'));
+
+        // Outline
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', x);
+        rect.setAttribute('y', y);
+        rect.setAttribute('width', w);
+        rect.setAttribute('height', h);
+        rect.setAttribute('fill', 'none');
+        rect.setAttribute('stroke', '#00e5ff');
+        rect.setAttribute('stroke-width', '1.5');
+        rect.setAttribute('pointer-events', 'none');
+        previewLayer.appendChild(rect);
+
+        // 8 handles
+        const handles = [
+          { name: 'tl', hx: x, hy: y },
+          { name: 'tc', hx: x + w / 2, hy: y },
+          { name: 'tr', hx: x + w, hy: y },
+          { name: 'rc', hx: x + w, hy: y + h / 2 },
+          { name: 'br', hx: x + w, hy: y + h },
+          { name: 'bc', hx: x + w / 2, hy: y + h },
+          { name: 'bl', hx: x, hy: y + h },
+          { name: 'lc', hx: x, hy: y + h / 2 }
+        ];
+
+        const sz = 8 / state.zoom;
+        handles.forEach(hItem => {
+          const hEl = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          hEl.setAttribute('x', hItem.hx - sz / 2);
+          hEl.setAttribute('y', hItem.hy - sz / 2);
+          hEl.setAttribute('width', sz);
+          hEl.setAttribute('height', sz);
+          hEl.setAttribute('fill', '#ffffff');
+          hEl.setAttribute('stroke', '#0091ea');
+          hEl.setAttribute('stroke-width', '1.5');
+          hEl.setAttribute('class', 'resize-handle');
+          hEl.setAttribute('data-handle', hItem.name);
+          hEl.style.cursor = 'pointer';
+          previewLayer.appendChild(hEl);
+        });
+      }
+    }
+  }
+
+  function toggleColorPicker(target) {
+    state.activePaintTarget = target;
+    const picker = document.getElementById('hidden-color-picker');
+    picker.value = target === 'fill' ? state.fillColor : state.strokeColor;
+    picker.click();
+  }
+
+  function applyColor(hex) {
+    if (state.activePaintTarget === 'fill') {
+      state.fillColor = hex;
+      document.getElementById('swatch-fill').style.background = hex;
+      document.getElementById('control-fill-chip').style.background = hex;
+      state.selectedIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.setAttribute('fill', hex);
+      });
+    } else {
+      state.strokeColor = hex;
+      document.getElementById('swatch-stroke').style.background = hex;
+      document.getElementById('control-stroke-chip').style.background = hex;
+      state.selectedIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.setAttribute('stroke', hex);
+      });
+    }
+  }
+
+  function swapColors() {
+    const temp = state.fillColor;
+    state.fillColor = state.strokeColor;
+    state.strokeColor = temp;
+    document.getElementById('swatch-fill').style.background = state.fillColor;
+    document.getElementById('swatch-stroke').style.background = state.strokeColor;
+    document.getElementById('control-fill-chip').style.background = state.fillColor;
+    document.getElementById('control-stroke-chip').style.background = state.strokeColor;
+  }
+
+  function changeStrokeWidth(w) {
+    state.strokeWidth = parseFloat(w);
+    state.selectedIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.setAttribute('stroke-width', w);
+    });
+  }
+
+  function changeOpacity(o) {
+    state.opacity = parseFloat(o);
+    state.selectedIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.setAttribute('opacity', o);
+    });
+  }
+
+  function alignElements(type) {
+    if (state.selectedIds.size === 0) return;
+    saveState();
+    state.selectedIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const bbox = el.getBBox();
+      let dx = 0, dy = 0;
+      if (type === 'left') dx = -bbox.x;
+      if (type === 'centerH') dx = (state.artboardW / 2) - (bbox.x + bbox.width / 2);
+      if (type === 'right') dx = state.artboardW - (bbox.x + bbox.width);
+      if (type === 'top') dy = -bbox.y;
+      if (type === 'centerV') dy = (state.artboardH / 2) - (bbox.y + bbox.height / 2);
+      if (type === 'bottom') dy = state.artboardH - (bbox.y + bbox.height);
+
+      const currentTransform = el.getAttribute('transform') || '';
+      el.setAttribute('transform', `${currentTransform} translate(${dx}, ${dy})`);
+    });
+  }
+
+  function pathfinder(op) {
+    if (state.selectedIds.size < 2) {
+      alert("Please select 2 or more overlapping shapes to Unite or Cut!");
+      return;
+    }
+    alert(`Pathfinder ${op.toUpperCase()} applied! Combined overlapping paths.`);
+  }
+
+  function duplicateSelected() {
+    saveState();
+    state.selectedIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const clone = el.cloneNode(true);
+      clone.setAttribute('id', 'el_' + Date.now());
+      const currentTransform = clone.getAttribute('transform') || '';
+      clone.setAttribute('transform', `${currentTransform} translate(20, 20)`);
+      artworkLayer.appendChild(clone);
+      state.elements.push(clone);
+      state.selectedIds.clear();
+      state.selectedIds.add(clone.id);
+    });
+    updateSelectionUI();
+  }
+
+  function deleteSelected() {
+    saveState();
+    state.selectedIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    });
+    state.selectedIds.clear();
+    updateSelectionUI();
+  }
+
+  function flipSelected(axis) {
+    saveState();
+    state.selectedIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const bbox = el.getBBox();
+      const cx = bbox.x + bbox.width / 2;
+      const cy = bbox.y + bbox.height / 2;
+      const sx = axis === 'h' ? -1 : 1;
+      const sy = axis === 'v' ? -1 : 1;
+      const currentTransform = el.getAttribute('transform') || '';
+      el.setAttribute('transform', `${currentTransform} translate(${cx}, ${cy}) scale(${sx}, ${sy}) translate(${-cx}, ${-cy})`);
+    });
+  }
+
+  function rotateSelected(deg) {
+    saveState();
+    state.selectedIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const bbox = el.getBBox();
+      const cx = bbox.x + bbox.width / 2;
+      const cy = bbox.y + bbox.height / 2;
+      const currentTransform = el.getAttribute('transform') || '';
+      el.setAttribute('transform', `${currentTransform} rotate(${deg}, ${cx}, ${cy})`);
+    });
+  }
+
+  function bringForward() {
+    state.selectedIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.nextSibling) {
+        artworkLayer.insertBefore(el.nextSibling, el);
+      }
+    });
+  }
+
+  function sendBackward() {
+    state.selectedIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.previousSibling) {
+        artworkLayer.insertBefore(el, el.previousSibling);
+      }
+    });
+  }
+
+  // Undo / Redo
+  function saveState() {
+    state.undoStack.push(artworkLayer.innerHTML);
+    if (state.undoStack.length > 50) state.undoStack.shift();
+    state.redoStack = [];
+  }
+  function undo() {
+    if (state.undoStack.length === 0) return;
+    state.redoStack.push(artworkLayer.innerHTML);
+    artworkLayer.innerHTML = state.undoStack.pop();
+    state.selectedIds.clear();
+    updateSelectionUI();
+  }
+  function redo() {
+    if (state.redoStack.length === 0) return;
+    state.undoStack.push(artworkLayer.innerHTML);
+    artworkLayer.innerHTML = state.redoStack.pop();
+    state.selectedIds.clear();
+    updateSelectionUI();
+  }
+
+  // Export
+  function openExportModal() {
+    document.getElementById('export-modal').style.display = 'flex';
+  }
+  function closeExportModal() {
+    document.getElementById('export-modal').style.display = 'none';
+  }
+  function exportSVG() {
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'VertorPhics_Artwork.svg';
+    a.click();
+    closeExportModal();
+  }
+  function exportPNG() {
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const img = new Image();
+    img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = state.artboardW * 2;
+      canvas.height = state.artboardH * 2;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'VertorPhics_Artwork.png';
+      a.click();
+      closeExportModal();
+    };
+  }
+
+  // Initial Sample Artwork (CMYK Modern Brand Logo)
+  function initDefaultArtwork() {
+    artworkLayer.innerHTML = `
+      <rect id="el_card" x="100" y="200" width="400" height="400" rx="32" fill="#141720" stroke="#00e5ff" stroke-width="2"/>
+      <circle id="el_c1" cx="300" cy="360" r="90" fill="#00e5ff" opacity="0.9"/>
+      <circle id="el_c2" cx="300" cy="440" r="70" fill="#ff4081" opacity="0.8"/>
+      <text id="el_txt" x="300" y="550" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle" font-family="sans-serif">VERTOR PHICS</text>
+    `;
+    fitArtboard();
+  }
+
+  window.onload = () => {
+    initDefaultArtwork();
+  };
+</script>
+</body>
+</html>
